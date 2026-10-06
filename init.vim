@@ -1,245 +1,238 @@
-"  _   _                 _           
-" | \ | | ___  _____   _(_)_ __ ___  
-" |  \| |/ _ \/ _ \ \ / / | '_ ` _ \ 
-" | |\  |  __/ (_) \ V /| | | | | | |
-" |_| \_|\___|\___/ \_/ |_|_| |_| |_|
-" *----------------------------------*
-" | Author: XuMuK_228                | 
-" | Path: ~/.config/nvim/init.vim    |
-" *----------------------------------*
+lua << END
 
-" Plugins
-call plug#begin() 
+vim.api.nvim_command("hi Normal guibg=#1e1f1f")
 
-" Themes
-Plug 'morhetz/gruvbox'
-Plug 'vim-airline/vim-airline-themes'
+require("options")
+require("plugins")
+require("globals")
+require("colorscheme")
+require("autocommands")
+require("neovide")
+-- require("lsp")
 
-" Language support
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'sheerun/vim-polyglot'
-Plug 'scrooloose/syntastic'
-Plug 'lervag/vimtex'
+require("generate").setup {}
 
-" UI 
-Plug 'ryanoasis/vim-devicons' 
-Plug 'goolord/alpha-nvim'
-Plug 'kyazdani42/nvim-web-devicons' 
-Plug 'kyazdani42/nvim-tree.lua'
-Plug 'vim-airline/vim-airline'
-" Plug 'nvim-lualine/lualine.nvim'
+require('lualine').setup {
+options = {
+theme = "auto",
+}
+}
+require("bufferline").setup{
+  options = {
+    offsets = {
+      {
+        filetype = "NvimTree",
+        text = "File Explorer",
+        text_align = "center",
+        separator = false
+      }
+    }
+  }
+}
 
-" Fs navigation 
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'jremmen/vim-ripgrep'
-Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
+require("ibl").setup {
+  enabled = true,
+  whitespace = {SPACE},
+  indent = {
+    char = "·",
+    smart_indent_cap = true,
+    priority = 2,
+  },
+  scope = {
+    enabled = false,
+  }
+}
+require('gitsigns').setup()
+-- require('marks').setup{}
+require("nvim-autopairs").setup {}
+require('nvim-web-devicons').set_icon {
 
-call plug#end()
+glsl = {
+    icon = "󰆧",
+    color = "#ebdbb2",
+    cterm_color = "65",
+    name = "glsl"
+},
+vert = {
+    icon = "󰆧",
+    color = "#ebdbb2",
+    cterm_color = "65",
+    name = "glsl"
+},
+frag = {
+    icon = "󰆧",
+    color = "#ebdbb2",
+    cterm_color = "65",
+    name = "glsl"
+},
+c = {
+    icon = "󰙱",
+    color = "#d3869b",
+    cterm_color = "65",
+    name = "C"
+},
+h = {
+    icon = "",
+    color = "#ebdbb2",
+    cterm_color = "65",
+    name = "h"
+},
+hpp = {
+    icon = "",
+    color = "#ebdbb2",
+    cterm_color = "65",
+    name = "Hpp"
+},
+cpp = {
+    icon = "󰙲",
+    color = "#d3869b",
+    cterm_color = "65",
+    name = "Cpp"
+},
+dockerfile = {
+    icon = "󰡨",
+    color = "#0192e7",
+    name = "dockerfile"
+},
+docker = {
+    icon = "󰡨",
+    color = "#0192e7",
+    name = "docker"
+},
+shell = {
+    icon = "",
+    name = "shell"
+},
+BUILD = {
+    icon = "",
+    color = "#43a047",
+    name = "BUILD"
+},
+WORKSAPCE = {
+    icon = "",
+    color = "#43a047",
+    name = "WORKSPACE"
+},
+TODO = {
+    icon = "",
+    color = "#43c047",
+    name = "TODO"
+},
+}
 
-" UI Enchantments
-set completeopt=menu,menuone,noselect
-set number
-set ruler
-set title
-set noshowcmd
-set noshowmode
-set termguicolors
-set nowrap
-set hidden
-set updatetime=300
-set signcolumn=number
-set signcolumn=yes
-set nocompatible
-set t_md=
-set cursorline
-set colorcolumn=80
-" set guicursor=a:block-blinkon1
-set relativenumber
+require("nvim-treesitter.configs").setup {
+highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+},
+indent = {
+},
+}
+local ts_utils = require("nvim-treesitter.ts_utils")
+ts_utils.is_in_node_range = vim.treesitter.is_in_node_range
 
-" Color scheme
-let g:gruvbox_bold = 0
-let g:gruvbox_invert_selection = 0
-let g:gruvbox_contrast_dark = 'medium'
+require("FTerm").setup({
+border = "rounded"
+})
 
-" colorscheme paramount
-colorscheme gruvbox
-" let g:airline_theme = 'base16_gruvbox_dark_hard'
-let g:airline_theme = 'base16_gruvbox_dark_medium'
-let g:gruvbox_material_disable_italic_comment = 1
+require("nvim-tree").setup({
+git = {
+    enable = false
+},
+renderer = {
+    icons = {
+        padding = " ",
+        glyphs = {
+            default = " ",
+            symlink = " ",
+            bookmark = " ",
+            modified = "● ",
+            folder = {
+                arrow_closed = "",
+                arrow_open = "",
+                default = " ",
+                open = " ",
+                empty = " ",
+                empty_open = " ",
+                symlink = " ",
+                symlink_open = " ",
+            }
+        },
+    },
+},
+})
+require("alpha").setup(require'alpha.themes.startify'.config)
+require("nvim-web-devicons").set_default_icon(' ', '#6d8086')
 
-syntax on
-filetype plugin indent on
-filetype plugin on
-set background=dark
+local action_state = require("telescope.actions.state")
+local actions = require("telescope.actions")
+require("telescope").setup({
+defaults = {
+    file_ignore_patterns = {
+        "Build",
+        "build",
+        "vcpkg_installed",
+        "temp.txt",
+        ".cache"
+    }
+},
+pickers = {
+    man_pages = { sections = {"1", "2", "3"} }
+},
+extensions = {
+    coc = {
+        theme = 'dropdown',
+        prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
+    }
+},
+})
+require('telescope').load_extension('coc')
 
-" Color scheme tweaks
-" let g:accent_color = 'guifg = #a790d5'
-" 
-" let g:accent_color = 'guifg=#ffdd33 gui=bold'
-" let g:normal_color = 'guifg=#e4e4ef  gui=NONE'
-" let g:extra_color = 'guifg=#73c936 gui=NONE'
-" 
-" execute 'hi Keyword ' . g:accent_color
-" execute 'hi Repeat ' . g:accent_color
-" execute 'hi Conditional ' . g:accent_color
-" execute 'hi Statement ' . g:accent_color
-" 
-" execute 'hi Normal guibg=#181818 ' . g:normal_color
-" execute 'hi Number ' . g:normal_color
-" execute 'hi Constant ' . g:normal_color
-" execute 'hi Function ' . g:normal_color
-" execute 'hi Type ' . g:normal_color
-" 
-" execute 'hi String ' . g:extra_color
-" execute 'hi cCharacter ' . g:extra_color
-" execute 'hi cFormat ' . g:extra_color
-" execute 'hi Special ' . g:extra_color
-" hi Visual guibg=#282828 guifg=NONE
-" hi Comment gui=NONE
+END
 
-" Note: to set a group bold or italic use gui=bold / gui=italic
-
-" hi Normal guibg=NONE
-hi EndOfBuffer guibg=NONE guifg=#282828
-hi Signs guibg=NONE guifg=NONE
-hi SignColumn guibg=NONE guifg=NONE
-hi CursorLine guibg=NONE
-hi LineNr guibg=NONE
-" hi CursorLineNr guibg=NONE guifg=#ffdd33
-hi CursorLineNr guibg=NONE
- 
-" if gruvbox
-" hi CursorLineNr guifg=#ebdbb2
-
-hi Paren cterm=none ctermbg=green ctermfg=blue
-
-hi SyntasticStyleWarningSign guibg=NONE
-hi SyntasticStyleErrorSign guibg=NONE
-hi SyntasticWarningSign guibg=NONE guifg=#fabd2f
-hi SyntasticErrorSign guibg=NONE guifg=#cc241d
-
-hi CocErrorSign guibg=NONE guifg=#cc241d
-hi CocWarningSign guibg=NONE guifg=#fabd2f
-hi CocErrorLine guibg=NONE guifg=NONE
-hi CocWarningLine guibg=NONE guifg=NONE
-
-" Code indenttation
-set autoindent
-set smartindent
-set cindent
-set smarttab
-set tabstop=4
-set shiftwidth=4
-set expandtab
-
-" Prevent coc.nvim errors
-set nobackup
-set nowritebackup
-
-" Vimtex
-let g:tex_flavor="latex"
-let g:vimtex_view_method="zathura"
-let g:vimtex_quickfix_mode=0
-set conceallevel=1
-let g:tex_conceal='abdmg'
-
-" Airline
-" let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#show_tabs = 0
-" let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_close_button = 0
+hi Conceal guibg=NONE
 
 " Other
-set shell=zsh
-set encoding=utf-8
-set t_BE=
 
 " Bindings
 let mapleader = " "
 
-lua << END
-require("nvim-tree").setup()
-require("alpha").setup(require'alpha.themes.startify'.config)
-require('telescope').setup{
-      defaults = {
-    vimgrep_arguments = {
-      "rg",
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      "--smart-case",
-    },
-    prompt_prefix = "   ",
-    selection_caret = "  ",
-    entry_prefix = "  ",
-    initial_mode = "insert",
-    selection_strategy = "reset",
-    sorting_strategy = "ascending",
-    layout_strategy = "horizontal",
-    layout_config = {
-      horizontal = {
-        prompt_position = "top",
-        preview_width = 0.55,
-        results_width = 0.8,
-      },
-      vertical = {
-        mirror = false,
-      },
-      width = 0.87,
-      height = 0.80,
-      preview_cutoff = 120,
-    },
-    file_sorter = require("telescope.sorters").get_fuzzy_file,
-    file_ignore_patterns = { "node_modules" },
-    generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
-    path_display = { "truncate" },
-    winblend = 0,
-    border = {},
-    borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-    color_devicons = true,
-    set_env = { ["COLORTERM"] = "truecolor" }, -- default = nil,
-    file_previewer = require("telescope.previewers").vim_buffer_cat.new,
-    grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
-    qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-    -- Developer configurations: Not meant for general override
-    buffer_previewer_maker = require("telescope.previewers").buffer_previewer_maker,
-    mappings = {
-      n = { ["q"] = require("telescope.actions").close },
-    },
-  },
+nnoremap <F3> :TSHighlightCapturesUnderCursor <CR>
+nnoremap <silent> <F2>  :let @/ = "" <CR>
 
-  extensions_list = { "themes", "terms" },
-}
--- require('lualine').setup {}
-require("bufferline").setup{}
-END
+hi FloatBorder guibg=NONE
+hi MarkSignNumHL guibg=NONE guifg=NONE
+hi link MarkSignHL GruvboxGreen
+" hi EndOfBuffer guifg=#1e1f1f
 
 inoremap jj <ESC>
-" inoremap \" \"\"<left>
-" inoremap ' ''<left>
-" inoremap ( ()<left>
-" inoremap [ []<left>
-" inoremap { {}<left>
-" inoremap {<CR> {<CR>}<ESC>O
-" inoremap {;<CR> {<CR>};<ESC>O
-
 nnoremap <leader>d :call CocActionAsync('doHover')<CR>
-" nnoremap <A-a> :bel 12split term://zsh <CR> :startinsert <CR>
-nnoremap <A-a> :CocCommand terminal.Toggle<CR>
+nnoremap <A-a> :lua require("FTerm").open() <CR>
+nnoremap <expr> j v:count ? 'j' : 'gj'
+nnoremap <expr> k v:count ? 'k' : 'gk'
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gf <Plug>(coc-fix-current)
 
+" Add the ability to follow links
+" if a link is yanked then `gl` will open it in a browser
+nnoremap <silent> gl :call system("brave " . @") <CR>
 
 tnoremap <A-h> <C-\><C-N><C-w>h
 tnoremap <A-j> <C-\><C-N><C-w>j
 tnoremap <A-k> <C-\><C-N><C-w>k
 tnoremap <A-l> <C-\><C-N><C-w>l
 tnoremap <A-d> <C-\><C-N><C-w>:bd!<CR>
+tnoremap <C-a> <C-\><C-n>:bd! <CR>
+tnoremap <A-a> <C-\><C-n>:lua require("FTerm").close() <CR>
+tnoremap <A-n> <C-\><C-n>:bn<CR>
+tnoremap <A-p> <C-\><C-n>:bp<CR>
+nnoremap <A-f> <cmd>Telescope find_files<CR>
+nnoremap <A-e> <cmd>Telescope coc diagnostics<CR>
+nnoremap <A-r> <cmd>Telescope live_grep<CR>
+nnoremap <A-m> <cmd>lua require("telescope.builtin").man_pages()<cr>
 
 inoremap <A-h> <C-\><C-N><C-w>h
 inoremap <A-j> <C-\><C-N><C-w>j
@@ -251,16 +244,17 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
-nnoremap <A-n> :bn<CR>
-nnoremap <A-p> :bp<CR>
-nnoremap <A-d> :bd<CR>
+nnoremap <A-n> :bn<cr>
+nnoremap <A-p> :bp<cr>
+nnoremap <A-d> :bd<cr>
 nnoremap <A-f> <CMD>Telescope find_files<CR>
 nnoremap <A-m> <CMD>Telescope man_pages<CR>
 nnoremap <A-c> <CMD>Telescope colorscheme<CR>
 nnoremap <A-q> <CMD>NvimTreeToggle<CR>
-
-tnoremap <C-a> <C-\><C-n>:bd! <CR>
-tnoremap <A-a> <C-\><C-n>:CocCommand terminal.Toggle<CR>
+nnoremap <A-s> :CocCommand clangd.switchSourceHeader<CR>
+nnoremap <A-x> <CMD>bd<CR>
+nnoremap <leader>f <C-w>w
+nnoremap <leader>r <Plug>(coc-rename)
 
 command -nargs=+ Compile new | 0read!<args>
 
@@ -269,17 +263,73 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
+function! CleanUpUI()
+    " hi SignColumn guibg=NONE
+    " Note: to set a group bold or italic use gui=bold / gui=italic
+
+    " if para
+    " hi EndOfBuffer guibg=NONE guifg=#000000
+    
+    hi LineNr guibg=NONE
+    " hi CursorLineNr guibg=NONE guifg=#ffdd33
+    hi CursorLineNr guifg=#6d6d6d
+    hi Visual guifg=NONE guibg=#264F79
+     
+    " if gruvbox
+    " hi CursorLineNr guifg=#ebdbb2
+
+    hi Paren cterm=none ctermbg=green ctermfg=blue
+
+    hi Conceal guibg=NONE
+    " hi LineNr guifg=#458588
+endfunction
+
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+       \ coc#pum#visible() ? coc#pum#next(1) :
+       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+       \ CheckBackspace() ? "\<TAB>" :
+       \ coc#refresh()
 
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
-" Autocommands
-autocmd VimLeave * set guicursor=a:ver25-blinkon0
-autocmd BufNewFile,BufRead *.asm set filetype=nasm
-autocmd Filetype nasm setlocal expandtab tabstop=8 shiftwidth=8 softtabstop=8
+let g:coc_snippet_next = '<tab>'
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" let &stc=' %s %=%l  '
+autocmd BufNewFile,BufRead WORKSPACE set filetype=python
+autocmd BufNewFile,BufRead BUILD set filetype=python
+autocmd BufNewFile,BufRead *.s set filetype=asm
+autocmd BufNewFile,BufRead *.tmpl set filetype=html
+autocmd BufNewFile,BufRead *.blade.php set filetype=html
+autocmd BufNewFile,BufRead *.ino set filetype=cpp
+
+" autocmd BufWritePost *.{cpp,hpp} silent :!clang-format -i --style='{BasedOnStyle: Microsoft, ColumnLimit: 80, AccessModifierOffset: -4}' %
+autocmd BufWritePost *.{c,h} silent :!clang-format -i % --style='{BasedOnStyle: Chromium, IndentWidth: 4, SortIncludes: false}'
+autocmd BufWritePost *.go silent :!gofmt -w -s %
+autocmd BufWritePost *.rs silent :!rustfmt --edition 2024 %
+autocmd BufWritePost *.py silent :!autopep8 -i %
+autocmd BufWritePost *.{ts,js,jsx,tsx} silent :!prettier -w %
+" autocmd BufWritePost *.go silent :!gofmt -w -s % && goimports-reviser -output file %
+
+" autocmd VimLeave * :!set_font $TERM_FONT
 autocmd CursorHold * silent call CocActionAsync('highlight')
-" autocmd BufWritePost *.c silent :!indent -kr -i8 %
-autocmd BufWritePost *.c silent :!clang-format -i --style=Microsoft %
+
+" autocmd BufWritePost *.lua silent :!stylua --indent-width 2 %
+
+if has('nvim') && exists('g:neovide')
+  call coc#rpc#stop()
+endif
+
+" colorscheme gruvbox
+set statuscolumn=%s%4l%=
+let g:vim_json_syntax_conceal = 0
+
+" copilot
+" imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+" let g:copilot_no_tab_map = v:true
